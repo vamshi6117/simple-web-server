@@ -30,41 +30,42 @@ var running_states = {
 }
 var install_source;
 
-window.api.initipc(function (event, message) {
-    if (message.type == "init") {
-        config = message.config;
-        ip = message.ip;
-        install_source = message.install_source;
-        if (config.background != null && config.updates != null) {
-            openMain();
-        } else {
-            initWelcome();
-        }
-        document.getElementById("stop_and_quit_button").style.display = config.background ? "block" : "none";
-        if (config.darkmode) {
-            document.body.classList.add("darkmode");
-        }
-        document.body.style.visibility = "visible";
+invoke('init').then(function(message) {
+    config = message.config;
+    ip = message.ip;
+    install_source = message.install_source;
+    if (config.background != null && config.updates != null) {
+        openMain();
+    } else {
+        initWelcome();
     }
-    if (message.type == "state") {
-        server_states = message.server_states;
-        updateRunningStates();
+    document.getElementById("stop_and_quit_button").style.display = config.background ? "block" : "none";
+    if (config.darkmode) {
+        document.body.classList.add("darkmode");
     }
-    if (message.type == "update") {
-        document.getElementById("update_banner").style.display = "block";
-        document.getElementById("update_banner").href = message.url;
-        document.getElementById("update_banner_text").innerText = message.text || "An updated version of Simple Web Server is available";
-        if (message.attributes.indexOf("high_priority") > -1) {
-            document.getElementById("update_banner").classList.add("high_priority");
-        } else {
-            document.getElementById("update_banner").classList.remove("high_priority");
-        }
+    document.body.style.visibility = "visible";
+})
+
+listen('state', function(event) {
+    server_states = event.payload.server_states;
+    updateRunningStates();
+})
+
+listen('update', function(event) {
+    document.getElementById("update_banner").style.display = "block";
+    document.getElementById("update_banner").href = event.payload.url;
+    document.getElementById("update_banner_text").innerText = event.payload.text || "An updated version of Simple Web Server is available";
+    if (event.payload.attributes.indexOf("high_priority") > -1) {
+        document.getElementById("update_banner").classList.add("high_priority");
+    } else {
+        document.getElementById("update_banner").classList.remove("high_priority");
     }
-    if (message.type == "ipchange") {
-        ip = message.ip;
-        updateOnIpChange();
-    }
-});
+})
+
+listen('ipchange', function(event) {
+    ip = event.payload.ip;
+    updateOnIpChange();
+})
 
 window.onresize = function() {
     reevaluateSectionHeights();
@@ -438,7 +439,7 @@ function submitAddServer() {
     }
     navigate("main");
     renderServerList();
-    window.api.saveconfig(config);
+    invoke("saveconfig", { "config": config });
 }
 
 var pend_delete_server_id = false;
@@ -447,7 +448,7 @@ function confirmDeleteServer() {
     config.servers.splice(pend_delete_server_id, 1);
     navigate("main");
     renderServerList();
-    window.api.saveconfig(config);
+    invoke("saveconfig", { "config": config });
     hidePrompt();
 }
 
@@ -464,7 +465,7 @@ if (config.servers[index].enabled) {
     document.getElementById(inedit ? "edit_server_running" : "server_"+index).classList.remove("checked")
 }
 updateRunningStates();
-window.api.saveconfig(config);
+invoke("saveconfig", { "config": config });
 }
 
 function toggleEditServerRunning() {
@@ -482,7 +483,7 @@ if (config.background) {
     config.background = true
 }
 document.getElementById("stop_and_quit_button").style.display = config.background ? "block" : "none";
-window.api.saveconfig(config);
+invoke("saveconfig", { "config": config });
 }
 
 function toggleUpdates() {
@@ -496,7 +497,7 @@ if (config.updates == true) {
     document.querySelector("#updates_welcome").classList.add("checked");
     config.updates = true
 }
-window.api.saveconfig(config);
+invoke("saveconfig", { "config": config });
 }
 
 function toggleDarkMode() {
@@ -509,7 +510,7 @@ if (config.darkmode) {
     config.darkmode = true
     document.body.classList.add("darkmode");
 }
-window.api.saveconfig(config);
+invoke("saveconfig", { "config": config });
 }
 
 function portValid() {
@@ -689,7 +690,7 @@ function generateCrypto() {
 function initWelcome() {
     config.background = false;
     config.updates = true;
-    window.api.saveconfig(config);
+    invoke("saveconfig", { "config": config });
     navigate("welcome");
     if (install_source == "macappstore") {
         document.querySelector("#updates_welcome").style.display = "none";
