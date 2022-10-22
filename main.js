@@ -150,7 +150,7 @@ function getServerStatusBox(local_config) {
                 }
             }
         
-            return '<div class="status_box"><div>Web server URL'+(url_list.length == 1 ? '' : 's')+'</div><div>'+url_list.map(function(a) {return '<a href="'+a+'" target="_blank" onclick="window.api.openExternal(this.href);event.preventDefault()">'+a+'</a>'}).join('<div style="padding-top: 6px;"></div>')+"</div></div>";
+            return '<div class="status_box"><div>Web server URL'+(url_list.length == 1 ? '' : 's')+'</div><div>'+url_list.map(function(a) {return '<a href="'+a+'" target="_blank">'+a+'</a>'}).join('<div style="padding-top: 6px;"></div>')+"</div></div>";
 
         } else if (getServerStatus(local_config).state == "error") {
             if (getServerStatus(local_config).error_message.indexOf("EADDRINUSE") > -1) {
@@ -568,10 +568,21 @@ function updateCurrentPath() {
 }
 
 function chooseFolder() {
-    window.api.showPicker(current_path).then(function(chosen_path) {
-        if (chosen_path && chosen_path.length > 0) {current_path = chosen_path[0]};
-        updateCurrentPath(); 
-    })
+    var dialog_options = {
+        directory: true,
+        multiple: false
+    };
+
+    if (current_path) {
+        dialog_options.defaultPath = current_path;
+    }
+
+    dialog.open(dialog_options).then(function(selected) {
+        if (selected) {
+            current_path = selected;
+            updateCurrentPath(); 
+        }
+    });
 }
 
 function htmlescape(str) {
