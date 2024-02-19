@@ -1,516 +1,101 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
-        <script type='application/javascript' charset="utf-8" src='lang.js'></script>
-    </head>
-    <body style="visibility: hidden;" ondragenter="dragEnter(event)" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dragDrop(event)">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GamersHQ - Your Ultimate Gaming Setup Destination</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  </head>
+  <body>
 
-        <!--Main server list-->
-        <div class="top_title" id="main_title">
-            <div class="title_text">Simple Web Server</div>
-            <div class="title_icon" onclick="openSettings()" tabindex="0" aria-label="{lang.settings}" role="button"><i class="material-icons" aria-hidden="true">settings</i></div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">GamersHQ</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Categories
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Keyboards</a>
+                        <a class="dropdown-item" href="#">Mouse</a>
+                        <a class="dropdown-item" href="#">Headsets</a>
+                        <a class="dropdown-item" href="#">Monitors</a>
+                        <a class="dropdown-item" href="#">Chairs</a>
+                        <a class="dropdown-item" href="#">Desks</a>
+                        <a class="dropdown-item" href="#">Lighting Solutions</a>
+                     
+                    </div>
+                </li>
+            </ul>
         </div>
-
-        <div class="container" id="main_container">
-            <a id="update_banner" target="_blank" onclick="window.api.openExternal(this.href);event.preventDefault()">
-                <div id="update_banner_text"></div>
-                <div aria-label="{lang.ignore_update}" onclick="ignoreUpdate();event.stopPropagation();return false;"><i class="material-icons" aria-hidden="true">close</i></div>
-            </a>
-            <div id="servers_list">
-            </div>
-        </div>
-
-        <div class="button_row" id="main_actions">
-            <div tabindex="0" class="button left" id="stop_and_quit_button" onclick="window.api.quit()" aria-label="{lang.stop_and_quit}" role="button">{lang.stop_and_quit}</div>
-            <div tabindex="0" class="button primary" onclick="addServer()" aria-label="{lang.new_server}" role="button">{lang.new_server}</div>
-        </div>
-
-        <!--Global settings-->
-        <div class="top_title" id="settings_title">
-            <div class="title_icon" onclick="backToMain()" tabindex="0" aria-label="{lang.back}" role="button"><i class="material-icons" aria-hidden="true">arrow_back</i></div>
-            <div class="title_text">{lang.settings}</div>
-        </div>
-
-        <div class="container full_container" id="settings_container">
-            <div style="padding-top: 8px;"></div>
-
-            <div class="input_option">
-                <div class="label">{lang.setting_language}<a href="https://github.com/terreng/simple-web-server/issues/124" target="_blank" onclick="window.api.openExternal(this.href);event.preventDefault()" style="float: right;color: var(--link-primary);font-weight: 500;font-size: 17px;">{lang.help_us_translate}</a></div>
-                <select id="language" oninput="changeLang()" aria-label="{lang.setting_language}"></select>
-            </div>
-
-            <div class="switch_option" id="background" onclick="toggleRunInBk()" tabindex="0" role="switch" aria-label="{lang.setting_background}">
-                <div class="switch"></div>
-                <div class="label">{lang.setting_background} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'background', 'setting')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-            </div>
-
-            <div class="switch_option" id="tray" onclick="toggleTray()" tabindex="0" role="switch" aria-label="{lang.setting_tray}">
-                <div class="switch"></div>
-                <div class="label">{lang.setting_tray} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'tray', 'setting')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-            </div>
-
-            <div class="switch_option" id="updates" onclick="toggleUpdates()" tabindex="0" role="switch" aria-label="{lang.setting_updates}">
-                <div class="switch"></div>
-                <div class="label">{lang.setting_updates} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'updates', 'setting')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-            </div>
-
-            <div class="input_option">
-                <div class="label">{lang.setting_theme} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'theme', 'setting')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                <select id="theme" oninput="themeChange()" aria-label="{lang.setting_theme}">
-                    <option value="system">{lang.setting_theme_system}</option>
-                    <option value="light">{lang.setting_theme_light}</option>
-                    <option value="dark">{lang.setting_theme_dark}</option>
-                </select>
-            </div>
-
-            <div class="free_label">
-                <div class="label">{lang.setting_plugins} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'plugins', 'setting')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-            </div>
-
-            <div id="plugins_list"></div>
-
-            <div style="padding: 8px 12px;overflow: hidden;">
-                <div tabindex="0" class="button left" onclick="addPlugin()" role="button" aria-label="{lang.add_plugin}">{lang.add_plugin}</div>
-            </div>
-
-            <div style="
-                position: -webkit-sticky;
-                position: sticky;
-                top: 100vh;
-            ">
-                <div style="
-                    margin: 0 auto;
-                    width: 80px;
-                    height: 80px;
-                    padding-top: 14px;
-                "><img src="images/logo.png" style="
-                    width: 80px;
-                "></div>
-                <div style="
-                    font-size: 18px;
-                    font-weight: 500;
-                    text-align: center;
-                    padding-top: 9px;
-                    padding-bottom: 6px;
-                ">Simple Web Server</div>
-                <div style="
-                    text-align: center;
-                    padding-bottom: 10px;
-                ">{lang.version} <span id="version_number"></span>&nbsp; • &nbsp;<a href="javascript:openLicenses()" style="
-                    color: var(--text-primary);
-                    text-decoration: none;
-                ">MIT License</a></div>
-                <div id="update_notice" style="
-                display: none;
-                text-align: center;
-                width: 310px;
-                margin: 0 auto;
-                max-width: 100%;
-                min-width: 70%;
-                padding-bottom: 10px;
-                "><a target="_blank" onclick="window.api.openExternal(this.href);event.preventDefault()" style="color: var(--link-primary);
-                font-weight: 500;
-                text-decoration: underline;">{lang.update_available}</a></div>
-
-                <a href="https://simplewebserver.org/docs" target="_blank" onclick="window.api.openExternal(this.href);event.preventDefault()"><div class="link_icon_item"><div><span class="material-icons" aria-hidden="true">public</span></div><div>{lang.documentation}</div></div></a>
-                <a href="https://github.com/terreng/simple-web-server/issues" target="_blank" onclick="window.api.openExternal(this.href);event.preventDefault()"><div class="link_icon_item"><div><svg style="width:28px;height:28px;color:var(--icons)" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" /></svg></div><div>{lang.issues_and_suggestions}</div></div></a>
-                <a href="javascript:openLicenses()"><div class="link_icon_item"><div><span class="material-icons" aria-hidden="true">article</span></div><div>Open Source Licenses</div></div></a>
-                <div style="padding-top: 10px;"></div>
-            </div>
-        </div>
-
-        <!--Open Source Licenses-->
-        <div class="top_title" id="licenses_title">
-            <div tabindex="0" class="title_icon" onclick="backToSettings()" aria-label="{lang.back}" role="button"><i class="material-icons" aria-hidden="true">arrow_back</i></div>
-            <div class="title_text">Open Source Licenses</div>
-        </div>
-
-        <div class="container full_container" id="licenses_container">
-            <div id="licenses_content" style="
-                line-break: anywhere;
-                white-space: pre-wrap;
-                padding: 10px;
-                font-size: 14px;
-                user-select: text;
-            "></div>
-        </div>
-
-        <!--Edit server-->
-        <div class="top_title" id="server_title">
-            <div role="button" aria-label="{lang.back}" tabindex="0" class="title_icon" onclick="backToMain()"><i class="material-icons" aria-hidden="true">arrow_back</i></div>
-            <div class="title_text" id="edit_server_title">{lang.edit_server}</div>
-        </div>
-
-        <div class="container" id="server_container">
-
-            <div id="server_container_status">
-
-            <div style="padding-top: 6px;"></div>
-
-            <div tabindex="0" class="switch_option" id="edit_server_running" onclick="toggleEditServerRunning()" role="switch">
-                <div class="switch"></div>
-                <div class="label"></div>
-            </div>
-
-            <div class="settings_server_list" id="settings_server_list">
-            </div>
-
-            </div>
-
-            <div style="padding-top: 6px;"></div>
-
-            <div class="input_option filepicker_input_option">
-                <div class="label" id="folder_path_label">{lang.option_path} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'path', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                <div tabindex="0" onclick="chooseFolder();" role="button">
-                    <div id="path" placeholder="{lang.choose_folder}"><div><span></span></div></div>
-                    <div class="button right" aria-hidden="true"><i class="material-icons" aria-hidden="true">folder_open</i></div>
-                </div>
-            </div>
-
-            <div class="input_error" id="folder_path_error">{lang.path_missing}</div>
-
-            <div class="input_option">
-                <div class="label">{lang.option_port} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'port', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                <input type="number" id="port" placeholder="8080" step="1" oninput="portChange()" style="width: 100px;" min="1" max="65535" aria-label="{lang.option_port}">
-            </div>
-
-            <div class="input_error">{lang.port_invalid}</div>
-            <div class="input_error">{lang.port_in_use}</div>
-
-            <div tabindex="0" class="checkbox_option" id="localnetwork" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_localnetwork}">
-                <div class="checkbox">
-                    <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                </div>
-                <div class="label">{lang.option_localnetwork} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'localnetwork', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-            </div>
-
-            <div style="padding-top: 6px;"></div>
-
-            <div tabindex="0" class="settings_section_header first_section" onclick="toggleSection(this)" role="button" aria-label="{lang.section_basic_rules}">
-                <div><i class="material-icons" aria-hidden="true">tune</i></div>
-                <div>{lang.section_basic_rules}</div>
-                <div><i class="material-icons" aria-hidden="true">expand_more</i></div>
-            </div>
-
-            <div class="settings_section" inert>
-                <div class="settings_section_inner">
-
-                <div tabindex="0" class="checkbox_option" id="showIndex" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_showIndex}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_showIndex} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'showIndex', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="spa" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_spa}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_spa} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'spa', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_rewriteTo} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'rewriteTo', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="rewriteTo" placeholder="/index.html" aria-label="{lang.option_rewriteTo}">
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="directoryListing" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_directoryListing}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_directoryListing} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'directoryListing', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="excludeDotHtml" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_excludeDotHtml}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_excludeDotHtml} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'excludeDotHtml', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                </div>
-            </div>
-
-            <div tabindex="0" class="settings_section_header" onclick="toggleSection(this)" role="button" aria-label="{lang.section_advanced_rules}">
-                <div><i class="material-icons" aria-hidden="true">rule</i></div>
-                <div>{lang.section_advanced_rules}</div>
-                <div><i class="material-icons" aria-hidden="true">expand_more</i></div>
-            </div>
-
-            <div class="settings_section" inert>
-                <div class="settings_section_inner">
-
-                <div tabindex="0" class="checkbox_option" id="ipv6" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_ipv6}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_ipv6} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'ipv6', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_cacheControl} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'cacheControl', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="cacheControl" placeholder="" aria-label="{lang.option_cacheControl}">
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="cors" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_cors}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_cors} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'cors', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="hiddenDotFiles" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_hiddenDotFiles}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_hiddenDotFiles} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'hiddenDotFiles', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="upload" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_upload}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_upload} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'upload', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="replace" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_replace}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_replace} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'replace', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="delete" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_delete}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_delete} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'delete', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="staticDirectoryListing" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_staticDirectoryListing}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_staticDirectoryListing} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'staticDirectoryListing', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="hiddenDotFilesDirectoryListing" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_hiddenDotFilesDirectoryListing}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_hiddenDotFilesDirectoryListing} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'hiddenDotFilesDirectoryListing', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="precompression" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_precompression}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_precompression} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'precompression', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="htaccess" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_htaccess}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_htaccess} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'htaccess', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                </div>
-            </div>
-
-            <div tabindex="0" class="settings_section_header" onclick="toggleSection(this)" role="button" aria-label="{lang.section_error_pages}">
-                <div><i class="material-icons" aria-hidden="true">report</i></div>
-                <div>{lang.section_error_pages}</div>
-                <div><i class="material-icons" aria-hidden="true">expand_more</i></div>
-            </div>
-
-            <div class="settings_section" inert>
-                <div class="settings_section_inner">
-
-                <div class="input_option">
-                    <div class="label">{lang.option_custom404} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'custom404', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="custom404" placeholder="/404.html" aria-label="{lang.option_custom404}">
-                </div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_custom403} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'custom403', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="custom403" placeholder="/403.html" aria-label="{lang.option_custom403}">
-                </div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_custom401} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'custom401', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="custom401" placeholder="/401.html" aria-label="{lang.option_custom401}">
-                </div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_customErrorReplaceString} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'customErrorReplaceString', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="customErrorReplaceString" placeholder="{{PATH}}" aria-label="{lang.option_customErrorReplaceString}">
-                </div>
-
-                </div>
-            </div>
-
-            <div tabindex="0" class="settings_section_header" id="security_section" onclick="toggleSection(this)" role="button" aria-label="{lang.section_security}">
-                <div><i class="material-icons" aria-hidden="true">security</i></div>
-                <div>{lang.section_security}</div>
-                <div><i class="material-icons" aria-hidden="true">expand_more</i></div>
-            </div>
-
-            <div class="settings_section" inert>
-                <div class="settings_section_inner">
-
-                <div tabindex="0" class="checkbox_option" id="https" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_https}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_https} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'https', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_httpsCert} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'httpsCert', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="httpsCert" placeholder="" aria-label="{lang.option_httpsCert}">
-                </div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_httpsKey} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'httpsKey', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="httpsKey" placeholder="" aria-label="{lang.option_httpsKey}">
-                </div>
-
-                <div style="padding: 8px 12px;overflow: hidden;">
-                    <div tabindex="0" class="button left" onclick="generateCrypto()" id="generate_crypto" role="button" aria-label="{lang.generate_crypto}">{lang.generate_crypto}</div>
-                </div>
-
-                <div tabindex="0" class="checkbox_option" id="httpAuth" onclick="toggleCheckbox(this)" role="checkbox" aria-label="{lang.option_httpAuth}">
-                    <div class="checkbox">
-                        <i class="material-icons" aria-hidden="true">check_box_outline_blank</i>
-                    </div>
-                    <div class="label">{lang.option_httpAuth} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'httpAuth', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                </div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_httpAuthUsername} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'httpAuthUsername', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="httpAuthUsername" placeholder="" oninput="httpAuthUsernameChange();reevaluateSectionHeights();" aria-label="{lang.option_httpAuthUsername}">
-                </div>
-
-                <div class="input_error">{lang.httpAuthUsername_invalid}</div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_httpAuthPassword} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'httpAuthPassword', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="text" id="httpAuthPassword" placeholder="" oninput="httpAuthPasswordChange();reevaluateSectionHeights();" aria-label="{lang.option_httpAuthPassword}">
-                </div>
-
-                <div class="input_error">{lang.httpAuthPassword_invalid}</div>
-
-                <div class="input_option">
-                    <div class="label">{lang.option_ipThrottling} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'ipThrottling', 'option')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
-                    <input type="number" id="ipThrottling" placeholder="10" step="1" oninput="ipLimitChange();reevaluateSectionHeights()" style="width: 100px;" aria-label="{lang.option_ipThrottling}">
-                </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mt-5 mb-4"></h1>
+        <!-- Add key features section here -->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     
-                <div class="input_error">{lang.ipThrottling_invalid}</div>
-
+      <body>
+        <div class="container">
+            <h1 class="mt-5 mb-4">GamersHQ - Your Ultimate Gaming Setup Destination</h1>
+            <p>GamersHQ is your one-stop destination for all things related to gaming setups. Whether you're a casual gamer looking to enhance your gaming experience or a professional streamer in need of top-tier equipment, we've got you covered. Our platform offers a comprehensive range of gaming peripherals, accessories, and tips to help you build your dream gaming setup.</p>
+            
+            <div class="row sm-5">
+                <div class="col-sm-4">
+                    <h3>Watches</h3>
+                    <p><img src="https://m.media-amazon.com/images/I/41sHRWXCfvL._SX300_SY300_QL70_FMwebp_.jpg" width="200" height="200"></p>
+                    <a href="https://amzn.to/3TcRtvH" class="btn btn-primary">
+                        <div class="c-grid gap-2 col-7 mx-auto">
+                        
+                        <button class="btn btn-primary" type="button">Buy Now</button>
+                      </div></a>
+                
+                </div>
+                <div class="col-md-4">
+                    <h3>Keyboards</h3>
+                    <p><img src="https://m.media-amazon.com/images/I/71Aw0HXoV5L._SL1500_.jpg" width="200" height="200"></p>
+                    <a href="https://amzn.to/42MEXpR" class="btn btn-primary"> Buy Now </a>
+                </div>
+                <div class="col-md-4">
+                    <h3>Mouse</h3>
+                    <p><img src="https://m.media-amazon.com/images/I/41eL3lz-yJL._SX300_SY300_QL70_FMwebp_.jpg" height="200" width="200"></p>
+                    <a href="https://amzn.to/3SCKeva" class="btn btn-primary">Buy Now</a>
                 </div>
             </div>
-
-            <div id="plugin_options"></div>
-
-            <div style="padding: 13px 10px;overflow: hidden;" id="delete_server_option"><div tabindex="0" class="button left destructive" onclick="deleteServer()" id="delete_server" role="button" aria-label="{lang.delete_server}">{lang.delete_server}</div></div>
-
-        </div>
-
-        <div class="button_row" id="server_actions">
-            <div tabindex="0" class="button left" onclick="cancelAddServer()" role="button" aria-label="{lang.cancel}">{lang.cancel}</div>
-            <div tabindex="0" class="button primary" onclick="submitAddServer()" id="submit_button" role="button" aria-label="{lang.save_changes}">{lang.save_changes}</div>
-        </div>
-
-        <!--Welcome screen-->
-        <div class="container fullest_container" id="welcome_container">
-            <div style="
-                top: 45%;
-                position: absolute;
-                left: 0;
-                right: 0;
-                transform: translateY(-50%);
-            ">
-
-                <div style="
-                    margin: 0 auto;
-                    width: 80px;
-                    height: 80px;
-                    padding-top: 14px;
-                "><img src="images/logo.png" style="
-                    width: 80px;
-                "></div>
-                <div style="
-                    font-size: 18px;
-                    font-weight: 500;
-                    text-align: center;
-                    padding-top: 9px;
-                    padding-bottom: 6px;
-                    margin-bottom: 7%;
-                ">Simple Web Server</div>
-
-                <div style="
-                    width: 100%;
-                    max-width: 330px;
-                    margin: 0 auto;
-                ">
-
-                <div tabindex="0" class="switch_option" id="background_welcome" onclick="toggleRunInBk()" role="switch" aria-label="{lang.setting_background}">
-                    <div class="switch"></div>
-                    <div class="label">{lang.setting_background} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'background', 'setting')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
+            
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <h3>Headsets</h3>
+                    <p><img src="https://m.media-amazon.com/images/I/71BUF2BtSTL._SL1500_.jpg" height="200" width="200"></p>
+                    <a href="https://amzn.to/3V3P1sL" class="btn btn-primary">Buy Now</a>
                 </div>
-
-                <div tabindex="0" class="switch_option checked" id="updates_welcome" onclick="toggleUpdates()" role="switch" aria-label="{lang.setting_updates}">
-                    <div class="switch"></div>
-                    <div class="label">{lang.setting_updates} <a href="#" class="help_icon" aria-label="{lang.help}" onclick="helpInfo(event, 'updates', 'setting')"><i class="material-icons" aria-hidden="true">help_outline</i></a></div>
+                <div class="col-md-4">
+                    <h3>Monitors</h3>
+                    <p><img src="https://m.media-amazon.com/images/I/61TFbwifPBL._SL1500_.jpg" height="200" width="200"></p>
+                    <a href="https://amzn.to/3I74y30" class="btn btn-primary">Buy Now</a>
                 </div>
-
+                <div class="col-md-4">
+                    <h3>Chairs</h3>
+                    <p><img src="https://m.media-amazon.com/images/I/41oVa2s5g1L._SX300_SY300_QL70_FMwebp_.jpg" height="200" width="200"></p>
+                    <a href="https://amzn.to/49pBXSD" class="btn btn-primary">Buy Now</a>
                 </div>
-
-                <div style="overflow: hidden;"><div class="button primary" tabindex="0" onclick="initContinue()" role="button" aria-label="{lang.get_started}" style="
-                    float: left;
-                    transform: translateX(-50%);
-                    margin-left: 50%;
-                    margin-top: 8%;
-                    ">{lang.get_started}</div></div>
-
             </div>
-
+            
+            <p class="mt-5">At GamersHQ, we're passionate about helping gamers of all levels create their ultimate gaming setups. Whether you're a casual player, a competitive esports athlete, or a content creator, our platform has everything you need to elevate your gaming experience. Join us today and take the first step towards building the gaming setup of your dreams!</p>
         </div>
-
-        <div id="prompt_bk" onclick="hidePrompt()"></div>
-
-        <dialog id="prompt" class="prompt_hide" onclose="promptClose()">
-            <div id="prompt_content">
-                <div id="prompt_title"></div>
-                <div id="prompt_text"></div>
-                <div id="prompt_actions"></div>
-            </div>
-        </dialog>
-
-        <div id="drop_zone"></div>
-
-        <script>
-            var language = navigator.userAgent.split("language:")[1];
-
-            if (lang[language] && Object.keys(lang[language])) {
-                for (var i = 0; i < Object.keys(lang[language]).length; i++) {
-                    lang["en"][Object.keys(lang[language])[i]] = lang[language][Object.keys(lang[language])[i]];
-                }
-            }
-            lang = lang["en"];
-
-            document.body.innerHTML = document.body.innerHTML.replace(/{lang\.([\w.]+?)}/g, function(match) {if (!lang[match.substring(6, match.length-1)]) {console.warn("Couldn't find lang string: "+match.substring(6, match.length-1))}; return lang[match.substring(6, match.length-1)]});
-
-            document.getElementById("language").innerHTML = Array.from(Object.entries(languages)).map(function(a) {return '<option value="'+a[0]+'">'+a[1]+'</option>'}).join("");
-            document.getElementById("language").value = language;
-
-            document.documentElement.setAttribute("lang", language);
-        </script>
-        <script src="main.js"></script>
+    
+        <!-- Bootstrap JS (Optional) -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </body>
+     
+
+</body>
 </html>
